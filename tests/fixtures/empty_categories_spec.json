@@ -6,7 +6,7 @@
     "sheets": [
       { "name": "Settings", "visibility": "visible" },
       { "name": "Dropdown Data", "visibility": "hidden" },
-      { "name": "Budget Planning", "visibility": "visible" },
+      { "name": "Budget-Planning", "visibility": "visible" },
       { "name": "Budget Tracking", "visibility": "visible" },
       { "name": "Calculations", "visibility": "hidden" },
       { "name": "Budget Dashboard", "visibility": "visible" }
@@ -22,7 +22,7 @@
   "sheets": {
     "Settings": {},
     "Dropdown Data": {},
-    "Budget Planning": {
+    "Budget-Planning": {
       "scaffold_years": 1
     },
     "Budget Tracking": {

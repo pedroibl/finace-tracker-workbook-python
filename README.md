@@ -12,7 +12,7 @@ The product requirements and phase checklists live in [`docs/prd-excell-budget-t
 
 - **Settings sheet** with starting year controls, late-income toggles, and named ranges (`StartingYear`, `LateIncomeEnabled`, `LateIncomeDay`).
 - **Dropdown Data sheet** housing dynamic years/months lists that back workbook validations (`YearsList`, `MonthsList`).
-- **Budget Planning sheet** containing income/expense/savings grids, totals, conditional formatting, and multi-year scaffolding.
+- **Budget-Planning sheet** containing income/expense/savings grids, totals, conditional formatting, and multi-year scaffolding.
 - **Budget Tracking sheet** with an Excel table, validations, running balance formulas, and conditional formatting.
 - **Calculations sheet** (hidden) that aggregates metrics, calculates MonthIdx, and exposes budget-vs-tracked comparisons.
 - **Dashboard sheet** combining selectors, KPI tiles, and doughnut charts for Income/Expenses/Savings.
@@ -191,7 +191,7 @@ Examples live under `examples/`. Consult the PRD for field-by-field requirements
 - Month list (Jan–Dec)
 - Named ranges `YearsList`, `MonthsList`
 
-### Budget Planning
+### Budget-Planning
 - Income/Expense/Savings sections with totals and accounting formats
 - Unallocated row with conditional formatting (green/red/grey)
 - Multi-year scaffolding with configurable count

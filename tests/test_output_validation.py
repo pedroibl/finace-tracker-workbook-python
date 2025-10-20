@@ -42,9 +42,9 @@ def test_generated_workbook_matches_golden(tmp_path: Path) -> None:
 
             if sheet_name == "Budget Dashboard":
                 assert len(golden_ws._charts) == len(generated_ws._charts)
-            if sheet_name == "Budget Planning":
-                assert golden_ws["D13"].value == generated_ws["D13"].value
-                assert golden_ws["D13"].number_format == generated_ws["D13"].number_format
+            if sheet_name == "Budget-Planning":
+                assert golden_ws["E24"].value == generated_ws["E24"].value
+                assert golden_ws["E24"].number_format == generated_ws["E24"].number_format
             if sheet_name == "Budget Tracking":
                 golden_table = next(iter(golden_ws.tables.values()))
                 generated_table = next(iter(generated_ws.tables.values()))

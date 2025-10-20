@@ -14,7 +14,7 @@ def minimal_spec() -> dict:
             "sheets": [
                 {"name": "Settings", "visibility": "visible"},
                 {"name": "Dropdown Data", "visibility": "hidden"},
-                {"name": "Budget Planning", "visibility": "visible"},
+                {"name": "Budget-Planning", "visibility": "visible"},
                 {"name": "Budget Tracking", "visibility": "visible"},
                 {"name": "Calculations", "visibility": "hidden"},
                 {"name": "Budget Dashboard", "visibility": "visible"},
@@ -38,7 +38,7 @@ def test_create_sheets_follows_visibility() -> None:
     assert gen.workbook.sheetnames == [
         "Settings",
         "Dropdown Data",
-        "Budget Planning",
+        "Budget-Planning",
         "Budget Tracking",
         "Calculations",
         "Budget Dashboard",

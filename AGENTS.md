@@ -14,7 +14,7 @@
 ## Recent Deliverables
 - Phase 1 foundation shipped: repo scaffold, dependency management, CLI entry point, JSON loader, workbook generator, and Settings sheet builder with validations.
 - Phase 2 delivery complete: Dropdown Data sheet (`src/budget_generator/sheets/dropdown.py`) with formula helpers, named range infrastructure (`utils/named_ranges.py`), and comprehensive tests.
-- Budget Planning sheet (`sheets/planning.py`) now renders full income/expense/savings grids with refreshed color palette, accounting formats, unallocated row, conditional formatting, and configurable multi-year scaffolding per PRD 2.3–2.5.
+- Budget-Planning sheet (`sheets/planning.py`) now renders full income/expense/savings grids with refreshed color palette, accounting formats, unallocated row, conditional formatting, and configurable multi-year scaffolding per PRD 2.3–2.5.
 - Tracking sheet (`sheets/tracking.py`) ships with table layout, validations linked to planning ranges, SUMPRODUCT/late-income formulas, and conditional formatting to highlight NA categories and income rows (PRD 2.6–2.8).
 - Planning named ranges are wired via `register_planning_named_ranges`, covering categories, grids, totals, headers, and unallocated row references; tracking sheet consumes these dynamic lists.
 - Planning named ranges are wired via `register_planning_named_ranges`, covering categories, grids, totals, headers, and unallocated row references.
@@ -58,7 +58,7 @@
 - Exit criteria: `uv run budget-generator --help` succeeds; workbook creation writes six sheets with correct visibility; Settings sheet validations operate as described.
 
 ### Phase 2 – Core Sheets (Weeks 3–4; PRD Sections 2.1–2.4)
-- Implement Dropdown Data sheet, named range manager, and full Budget Planning sheet structure with formulas, conditional formatting, and unallocated calculations.
+- Implement Dropdown Data sheet, named range manager, and full Budget-Planning sheet structure with formulas, conditional formatting, and unallocated calculations.
 - Ensure tests cover sheet builders, formula helpers, and named ranges.
 - Exit criteria: Planning sheet totals balance, named ranges resolve inside Excel, and regression tests flag any drift.
 

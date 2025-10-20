@@ -64,16 +64,26 @@ def test_register_many_is_convenience_wrapper() -> None:
 def test_register_planning_named_ranges_sets_expected_refs() -> None:
     workbook = Workbook()
     ws = workbook.active
-    ws.title = "Budget Planning"
+    ws.title = "Budget-Planning"
 
     build_planning_sheet(ws, {})
 
     manager = NamedRangeManager(workbook)
     register_planning_named_ranges(manager)
 
-    assert workbook.defined_names["IncomeCats"].attr_text == "'Budget Planning'!$C$8:$C$12"
-    assert workbook.defined_names["ExpenseGrid"].attr_text == "'Budget Planning'!$D$16:$O$25"
-    assert workbook.defined_names["SavingsTotals"].attr_text == "'Budget Planning'!$D$34:$O$34"
+    income_ref = workbook.defined_names["IncomeCats"].attr_text
+    expense_grid_ref = workbook.defined_names["ExpenseGrid"].attr_text
+    savings_totals_ref = workbook.defined_names["SavingsTotals"].attr_text
+
+    assert income_ref in {"'Budget-Planning'!$D$12:$D$23", "Budget-Planning!$D$12:$D$23"}
+    assert expense_grid_ref in {
+        "'Budget-Planning'!$E$33:$Q$44",
+        "Budget-Planning!$E$33:$Q$44",
+    }
+    assert savings_totals_ref in {
+        "'Budget-Planning'!$E$67:$Q$67",
+        "Budget-Planning!$E$67:$Q$67",
+    }
 
 
 def test_register_calculations_named_ranges_sets_expected_refs() -> None:

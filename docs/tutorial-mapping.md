@@ -18,7 +18,7 @@ This document connects the example JSON specification (`examples/tutorial_spec.j
   "sheets": {
     "Settings": {...},
     "Dropdown Data": {...},
-    "Budget Planning": {...},
+    "Budget-Planning": {...},
     "Budget Tracking": {...},
     "Budget Dashboard": {...}
   }
@@ -57,11 +57,11 @@ Derived named ranges: `YearsList` (`B3:B7`), `MonthsList` (`C3:C14`).
 
 ---
 
-## Budget Planning (`sheets.Budget Planning`)
+## Budget-Planning (`sheets.Budget-Planning`)
 
 | JSON Field | Example | Excel Output |
 |------------|---------|--------------|
-| `scaffold_years` | `2` | Year 1 detailed grid; Year 2 banner/month headers (`Q` columns) |
+| `scaffold_years` | `2` | Year 1 detailed grid; Year 2 banner/month headers (`S` block) |
 
 Sections (Income, Expenses, Savings) are standardised and always rendered. Conditional formatting and totals are generated automatically. Named ranges registered include `IncomeCats`, `IncomeGrid`, `IncomeTotals`, etc.
 
@@ -122,7 +122,7 @@ Builder adds:
 
 ## Tips for Customisation
 
-- **Multiple Years**: adjust `Budget Planning.scaffold_years`.
+- **Multiple Years**: adjust `Budget-Planning.scaffold_years`.
 - **Tracking Table Size**: set `Budget Tracking.max_rows` to desired length.
 - **Dashboard Defaults**: override `Budget Dashboard.selectors` to change initial Year/Period.
 - **Late Income Behavior**: toggle `late_income` in the Settings block.

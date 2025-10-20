@@ -217,7 +217,7 @@ Deliver Python Excel Budget Generator v1.0.0 within the eight-week plan defined 
 
 ### Phase 2 – Core Sheets (Week 3–4)
 - [ ] Ship Dropdown Data sheet and named range manager.
-- [ ] Build Budget Planning sheet structure, totals, conditional formatting, and accounting styles.
+- [ ] Build Budget-Planning sheet structure, totals, conditional formatting, and accounting styles.
 - [ ] Refresh fixtures/tests to cover months, categories, and unallocated calculations.
 - Exit Criteria: Planning sheet formulas compute correctly; named ranges resolve inside Excel.
 
@@ -322,7 +322,7 @@ Deliver Python Excel Budget Generator v1.0.0 within the eight-week plan defined 
 
 ### Phase 2 – Core Sheets (Week 3–4)
 - [ ] Ship Dropdown Data sheet and named range manager.
-- [ ] Build Budget Planning sheet structure, totals, conditional formatting, and accounting styles.
+- [ ] Build Budget-Planning sheet structure, totals, conditional formatting, and accounting styles.
 - [ ] Refresh fixtures/tests to cover months, categories, and unallocated calculations.
 - Exit Criteria: Planning sheet formulas compute correctly; named ranges resolve inside Excel.
 
