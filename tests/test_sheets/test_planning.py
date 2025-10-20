@@ -1,8 +1,16 @@
 from __future__ import annotations
 
 from openpyxl import Workbook
+from openpyxl.utils import get_column_letter
 
-from budget_generator.sheets.planning import ACCOUNTING_FORMAT, build_planning_sheet
+from budget_generator.sheets.planning import ACCOUNTING_FORMAT, MONTHS, build_planning_sheet
+
+
+def _year_block_start(block_index: int) -> int:
+    """Return the starting column index for the given 1-based *block_index*."""
+
+    block_width = len(MONTHS) + 2  # 12 months + total + gap
+    return 5 + (block_index - 1) * block_width
 
 
 def test_planning_banner_and_headers() -> None:
@@ -53,6 +61,22 @@ def test_planning_sections_and_totals() -> None:
     assert total_cell.value == "=SUM(E12:P12)"
     assert total_cell.number_format == ACCOUNTING_FORMAT
 
+    # Subsequent year blocks should also initialise rows and totals
+    second_block_start = _year_block_start(2)
+    second_block_end = second_block_start + len(MONTHS) - 1
+    for column in range(second_block_start, second_block_end + 1):
+        assert ws.cell(row=12, column=column).value == 0
+        assert ws.cell(row=12, column=column).number_format == ACCOUNTING_FORMAT
+
+    second_total_column = second_block_start + len(MONTHS)
+    start_letter = get_column_letter(second_block_start)
+    end_letter = get_column_letter(second_block_end)
+    expected_formula = f"=SUM({start_letter}12:{end_letter}12)"
+    assert ws.cell(row=12, column=second_total_column).value == expected_formula
+    assert (
+        ws.cell(row=12, column=second_total_column).number_format == ACCOUNTING_FORMAT
+    )
+
 
 def test_unallocated_row_formulas_and_conditional_formatting() -> None:
     wb = Workbook()
@@ -66,6 +90,19 @@ def test_unallocated_row_formulas_and_conditional_formatting() -> None:
         assert ws.cell(row=7, column=column).value == (
             f"={col_letter}24-({col_letter}45+{col_letter}67)"
         )
+
+    # Later year blocks should mirror the same formula pattern
+    second_block_start = _year_block_start(2)
+    second_letter = get_column_letter(second_block_start)
+    assert ws.cell(row=7, column=second_block_start).value == (
+        f"={second_letter}24-({second_letter}45+{second_letter}67)"
+    )
+
+    final_total_column = _year_block_start(16) + len(MONTHS)
+    final_letter = get_column_letter(final_total_column)
+    assert ws.cell(row=7, column=final_total_column).value == (
+        f"={final_letter}24-({final_letter}45+{final_letter}67)"
+    )
 
     cf_rules = []
     for cf in ws.conditional_formatting:
@@ -83,10 +120,16 @@ def test_year_two_scaffold_present() -> None:
 
     build_planning_sheet(ws, {})
 
-    assert ws["S5"].value == "=E5+1"
-    second_year_headers = [ws.cell(row=6, column=col).value for col in range(19, 32)]
+    second_block_start = _year_block_start(2)
+    second_banner = ws.cell(row=5, column=second_block_start)
+    assert second_banner.value == "=E5+1"
+
+    header_columns = range(second_block_start, second_block_start + len(MONTHS) + 1)
+    second_year_headers = [ws.cell(row=6, column=col).value for col in header_columns]
     assert second_year_headers[0] == '=IF(S7=0,"Jan ✓","Jan")'
-    assert ws["S8"].value == "Year 2 scaffold – extend rows as needed"
+    assert ws.cell(row=8, column=second_block_start).value == (
+        "Year 2 scaffold – extend rows as needed"
+    )
 
 
 def test_scaffold_years_config_creates_additional_headers() -> None:

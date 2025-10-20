@@ -49,9 +49,9 @@
         "start_row": 3
       }
     },
-    "Budget-Planning": {
-      "scaffold_years": 2
-    },
+      "Budget-Planning": {
+        "scaffold_years": 16
+      },
     "Budget Tracking": {
       "max_rows": 200
     },

@@ -45,6 +45,19 @@ class SectionDefinition:
     categories: Iterable[str]
 
 
+@dataclass(frozen=True)
+class YearBlock:
+    """Description of a single year scaffold block in the planning sheet."""
+
+    offset: int
+    month_columns: tuple[int, ...]
+    total_column: int
+
+    @property
+    def start_column(self) -> int:
+        return self.month_columns[0]
+
+
 class PlanningSheetBuilder:
     """Internal helper that encapsulates worksheet layout and styling."""
 
@@ -108,10 +121,8 @@ class PlanningSheetBuilder:
     def __init__(self, worksheet: Worksheet, spec: Mapping[str, object]):
         self.ws = worksheet
         self.spec = spec
-        self.month_columns = tuple(
-            range(self.YEAR_START_COLUMN, self.YEAR_START_COLUMN + len(MONTHS))
-        )
-        self.total_column = self.YEAR_START_COLUMN + len(MONTHS)
+        self.scaffold_years = max(1, int(self.spec.get("scaffold_years", 16)))
+        self.year_blocks: list[YearBlock] = []
         self.year_block_width = len(MONTHS) + 1 + self.GAP_BETWEEN_BLOCKS
 
     # ------------------------------------------------------------------
@@ -125,7 +136,8 @@ class PlanningSheetBuilder:
             self._render_section(section)
         self._populate_unallocated_formulas()
         self._apply_conditional_formatting()
-        self.ws.freeze_panes = "E12"
+        freeze_column = get_column_letter(self.year_blocks[0].start_column)
+        self.ws.freeze_panes = f"{freeze_column}12"
 
     # ------------------------------------------------------------------
     # Hero + year scaffolding
@@ -147,11 +159,12 @@ class PlanningSheetBuilder:
         subtitle_cell.alignment = Alignment(wrap_text=True)
 
     def _build_year_blocks(self) -> None:
-        scaffold_years = max(1, int(self.spec.get("scaffold_years", 2)))
-        for offset in range(scaffold_years):
-            self._build_year_block(offset)
+        self.year_blocks.clear()
+        for offset in range(self.scaffold_years):
+            block = self._build_year_block(offset)
+            self.year_blocks.append(block)
 
-    def _build_year_block(self, offset: int) -> None:
+    def _build_year_block(self, offset: int) -> YearBlock:
         start_col = self.YEAR_START_COLUMN + offset * self.year_block_width
         month_columns = tuple(range(start_col, start_col + len(MONTHS)))
         total_column = start_col + len(MONTHS)
@@ -198,6 +211,8 @@ class PlanningSheetBuilder:
         note_cell.font = Font(size=10, italic=True)
         note_cell.alignment = Alignment(wrap_text=True)
 
+        return YearBlock(offset=offset, month_columns=month_columns, total_column=total_column)
+
     # ------------------------------------------------------------------
     # Sections
     # ------------------------------------------------------------------
@@ -225,14 +240,15 @@ class PlanningSheetBuilder:
             category_cell = self.ws.cell(row=row, column=self.CATEGORY_COLUMN)
             category_cell.value = category
 
-            for column in self.month_columns:
-                cell = self.ws.cell(row=row, column=column)
-                cell.value = 0
-                cell.number_format = ACCOUNTING_FORMAT
+            for block in self.year_blocks:
+                for column in block.month_columns:
+                    cell = self.ws.cell(row=row, column=column)
+                    cell.value = 0
+                    cell.number_format = ACCOUNTING_FORMAT
 
-            total_cell = self.ws.cell(row=row, column=self.total_column)
-            total_cell.value = self._row_total_formula(row)
-            total_cell.number_format = ACCOUNTING_FORMAT
+                total_cell = self.ws.cell(row=row, column=block.total_column)
+                total_cell.value = self._row_total_formula(row, block)
+                total_cell.number_format = ACCOUNTING_FORMAT
 
     def _write_section_totals(self, section: SectionDefinition) -> None:
         total_label = self.ws.cell(row=section.total_row, column=self.CATEGORY_COLUMN)
@@ -240,18 +256,22 @@ class PlanningSheetBuilder:
         total_label.font = Font(bold=True)
         total_label.fill = PatternFill(start_color="FFF2CC", end_color="FFF2CC", fill_type="solid")
 
-        for column in self.month_columns:
-            cell = self.ws.cell(row=section.total_row, column=column)
-            cell.value = self._section_total_formula(section)
-            cell.number_format = ACCOUNTING_FORMAT
-            cell.font = Font(bold=True)
-            cell.fill = PatternFill(start_color="FFF2CC", end_color="FFF2CC", fill_type="solid")
+        total_fill = PatternFill(start_color="FFF2CC", end_color="FFF2CC", fill_type="solid")
+        total_font = Font(bold=True)
 
-        total_cell = self.ws.cell(row=section.total_row, column=self.total_column)
-        total_cell.value = self._section_total_formula(section)
-        total_cell.number_format = ACCOUNTING_FORMAT
-        total_cell.font = Font(bold=True)
-        total_cell.fill = PatternFill(start_color="FFF2CC", end_color="FFF2CC", fill_type="solid")
+        for block in self.year_blocks:
+            for column in block.month_columns:
+                cell = self.ws.cell(row=section.total_row, column=column)
+                cell.value = self._section_total_formula(section)
+                cell.number_format = ACCOUNTING_FORMAT
+                cell.font = total_font
+                cell.fill = total_fill
+
+            total_cell = self.ws.cell(row=section.total_row, column=block.total_column)
+            total_cell.value = self._section_total_formula(section)
+            total_cell.number_format = ACCOUNTING_FORMAT
+            total_cell.font = total_font
+            total_cell.fill = total_fill
 
     def _apply_section_borders(self, section: SectionDefinition) -> None:
         border = Border(
@@ -260,8 +280,9 @@ class PlanningSheetBuilder:
             top=Side(style="thin"),
             bottom=Side(style="thin"),
         )
+        end_column = self.year_blocks[-1].total_column
         for row in range(section.title_row, section.total_row + 1):
-            for column in range(self.CATEGORY_COLUMN, self.total_column + 1):
+            for column in range(self.CATEGORY_COLUMN, end_column + 1):
                 self.ws.cell(row=row, column=column).border = border
 
     # ------------------------------------------------------------------
@@ -277,22 +298,23 @@ class PlanningSheetBuilder:
         expense_total_row = self.SECTION_DEFINITIONS[1].total_row
         savings_total_row = self.SECTION_DEFINITIONS[2].total_row
 
-        for column in self.month_columns + (self.total_column,):
-            letter = get_column_letter(column)
-            income_ref = f"{letter}{income_total_row}"
-            expense_ref = f"{letter}{expense_total_row}"
-            savings_ref = f"{letter}{savings_total_row}"
-            cell = self.ws.cell(row=self.UNALLOCATED_ROW, column=column)
-            cell.value = f"={income_ref}-({expense_ref}+{savings_ref})"
-            cell.number_format = ACCOUNTING_FORMAT
-            cell.font = Font(bold=True)
+        for block in self.year_blocks:
+            for column in (*block.month_columns, block.total_column):
+                letter = get_column_letter(column)
+                income_ref = f"{letter}{income_total_row}"
+                expense_ref = f"{letter}{expense_total_row}"
+                savings_ref = f"{letter}{savings_total_row}"
+                cell = self.ws.cell(row=self.UNALLOCATED_ROW, column=column)
+                cell.value = f"={income_ref}-({expense_ref}+{savings_ref})"
+                cell.number_format = ACCOUNTING_FORMAT
+                cell.font = Font(bold=True)
 
     # ------------------------------------------------------------------
     # Helpers
     # ------------------------------------------------------------------
-    def _row_total_formula(self, row: int) -> str:
-        start_letter = get_column_letter(self.month_columns[0])
-        end_letter = get_column_letter(self.month_columns[-1])
+    def _row_total_formula(self, row: int, block: YearBlock) -> str:
+        start_letter = get_column_letter(block.month_columns[0])
+        end_letter = get_column_letter(block.month_columns[-1])
         return f"=SUM({start_letter}{row}:{end_letter}{row})"
 
     def _section_total_formula(self, section: SectionDefinition) -> str:
@@ -304,8 +326,8 @@ class PlanningSheetBuilder:
         )
 
     def _apply_conditional_formatting(self) -> None:
-        start_letter = get_column_letter(self.month_columns[0])
-        end_letter = get_column_letter(self.total_column)
+        start_letter = get_column_letter(self.year_blocks[0].start_column)
+        end_letter = get_column_letter(self.year_blocks[-1].total_column)
         add_unallocated_conditional_formatting(
             self.ws, start_letter, end_letter, self.UNALLOCATED_ROW
         )
