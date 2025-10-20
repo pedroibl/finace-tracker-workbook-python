@@ -61,7 +61,7 @@ Derived named ranges: `YearsList` (`B3:B7`), `MonthsList` (`C3:C14`).
 
 | JSON Field | Example | Excel Output |
 |------------|---------|--------------|
-| `scaffold_years` | `2` | Year 1 detailed grid; Year 2 banner/month headers (`S` block) |
+| `scaffold_years` | `16` | Year 1 detailed grid plus 15 scaffolded years (`S`, `AG`, …, `HG/HS` blocks) |
 
 Sections (Income, Expenses, Savings) are standardised and always rendered. Conditional formatting and totals are generated automatically. Named ranges registered include `IncomeCats`, `IncomeGrid`, `IncomeTotals`, etc.
 
