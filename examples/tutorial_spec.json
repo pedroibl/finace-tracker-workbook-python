@@ -50,7 +50,7 @@
       }
     },
     "Budget-Planning": {
-      "scaffold_years": 2
+      "scaffold_years": 16
     },
     "Budget Tracking": {
       "max_rows": 200
