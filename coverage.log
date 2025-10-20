@@ -1,0 +1,46 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.14.0, pytest-8.4.2, pluggy-1.6.0
+rootdir: /Users/pibl/Dev/pyhon-workspace/budget-excel-tracker
+configfile: pyproject.toml
+testpaths: tests
+collected 46 items
+
+tests/test_cli.py ...                                                    [  6%]
+tests/test_formulas/test_calculation_formulas.py ..                      [ 10%]
+tests/test_generator.py ......                                           [ 23%]
+tests/test_integration.py ...                                            [ 30%]
+tests/test_json_loader.py .....                                          [ 41%]
+tests/test_named_ranges.py .........                                     [ 60%]
+tests/test_output_validation.py .                                        [ 63%]
+tests/test_sheets/test_calculations.py ...                               [ 69%]
+tests/test_sheets/test_dashboard.py ...                                  [ 76%]
+tests/test_sheets/test_dropdown.py ..                                    [ 80%]
+tests/test_sheets/test_planning.py .....                                 [ 91%]
+tests/test_sheets/test_settings.py .                                     [ 93%]
+tests/test_sheets/test_tracking.py ...                                   [100%]
+
+============================== 46 passed in 2.22s ==============================
+Total lines: 1132
+Executed lines: 929
+Approximate coverage: 82.07%
+
+Missing lines:
+  src/budget_generator/__init__.py: 4, 7
+  src/budget_generator/__main__.py: 63, 64, 65, 66, 67, 68, 78, 80, 82, 83...
+  src/budget_generator/charts/__init__.py: 3
+  src/budget_generator/charts/doughnut.py: 41, 42, 43, 44, 45
+  src/budget_generator/formatting/conditional.py: 11, 12
+  src/budget_generator/formatting/styles.py: 24, 25, 26, 27, 31
+  src/budget_generator/formatting/validation.py: 22, 23
+  src/budget_generator/formulas/__init__.py: 3, 6
+  src/budget_generator/formulas/builder.py: 9, 10
+  src/budget_generator/formulas/calculations.py: 16, 17, 19
+  src/budget_generator/generator.py: 15, 16, 127, 142, 154
+  src/budget_generator/sheets/calculations.py: 13, 14, 47, 48, 49, 51, 52, 53, 54
+  src/budget_generator/sheets/dashboard.py: 17, 18, 19, 20, 21, 22, 23, 65, 66, 67...
+  src/budget_generator/sheets/dropdown.py: 17, 18, 19, 20, 21, 22, 23, 24, 25, 26...
+  src/budget_generator/sheets/planning.py: 17, 18, 19, 20, 21, 22, 23, 24, 25, 26...
+  src/budget_generator/sheets/tracking.py: 16, 17, 18, 19, 20, 21, 22, 111, 112, 113...
+  src/budget_generator/utils/__init__.py: 3, 4, 5, 6, 7, 8, 9, 10, 12, 13...
+  src/budget_generator/utils/json_loader.py: 13, 14, 15, 16, 17, 18, 48, 49, 50, 58...
+  src/budget_generator/utils/named_ranges.py: 47, 48, 49, 50, 51, 53, 60, 68, 69, 70...

@@ -1,0 +1,57 @@
+{
+  "meta": {
+    "name": "Tutorial Budget",
+    "version": "1.0.0"
+  },
+  "workbook": {
+    "sheets": [
+      { "name": "Settings", "visibility": "visible" },
+      { "name": "Dropdown Data", "visibility": "hidden" },
+      { "name": "Budget Planning", "visibility": "visible" },
+      { "name": "Budget Tracking", "visibility": "visible" },
+      { "name": "Calculations", "visibility": "hidden" },
+      { "name": "Budget Dashboard", "visibility": "visible" }
+    ],
+    "named_ranges": {
+      "StartingYear": { "sheet": "Settings", "ref": "C4" },
+      "LateIncomeEnabled": { "sheet": "Settings", "ref": "C6" },
+      "LateIncomeDay": { "sheet": "Settings", "ref": "C7" },
+      "YearsList": { "sheet": "Dropdown Data", "ref": "B3:B7" },
+      "MonthsList": { "sheet": "Dropdown Data", "ref": "C3:C14" },
+      "DashYear": { "sheet": "Budget Dashboard", "ref": "C3" },
+      "DashPeriod": { "sheet": "Budget Dashboard", "ref": "C4" },
+      "MonthIdx": { "sheet": "Calculations", "ref": "K1" }
+    }
+  },
+  "sheets": {
+    "Settings": {
+      "general": {
+        "title": "General Settings",
+        "starting_year": 2025,
+        "starting_year_help": "← Change this to your budget base year"
+      },
+      "late_income": {
+        "enabled_default": false,
+        "day_default": 25
+      }
+    },
+    "Dropdown Data": {
+      "years": {
+        "count": 5,
+        "start_row": 3
+      }
+    },
+    "Budget Planning": {
+      "scaffold_years": 2
+    },
+    "Budget Tracking": {
+      "max_rows": 200
+    },
+    "Budget Dashboard": {
+      "selectors": {
+        "default_period": "Jan",
+        "default_year_formula": "=StartingYear"
+      }
+    }
+  }
+}

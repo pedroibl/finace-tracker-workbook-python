@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "name": "Broken Spec",
+    "version": "0.0.0"
+  },
+  "workbook": {
+    "sheets": [
+      {"name": "Settings"}
+    ]
+  },
+  "sheets": []
+}

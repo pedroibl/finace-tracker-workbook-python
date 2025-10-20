@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "name": "Empty Categories Demo"
+  },
+  "workbook": {
+    "sheets": [
+      { "name": "Settings", "visibility": "visible" },
+      { "name": "Dropdown Data", "visibility": "hidden" },
+      { "name": "Budget Planning", "visibility": "visible" },
+      { "name": "Budget Tracking", "visibility": "visible" },
+      { "name": "Calculations", "visibility": "hidden" },
+      { "name": "Budget Dashboard", "visibility": "visible" }
+    ],
+    "named_ranges": {
+      "StartingYear": { "sheet": "Settings", "ref": "C4" },
+      "LateIncomeEnabled": { "sheet": "Settings", "ref": "C6" },
+      "LateIncomeDay": { "sheet": "Settings", "ref": "C7" },
+      "YearsList": { "sheet": "Dropdown Data", "ref": "B3:B7" },
+      "MonthsList": { "sheet": "Dropdown Data", "ref": "C3:C14" }
+    }
+  },
+  "sheets": {
+    "Settings": {},
+    "Dropdown Data": {},
+    "Budget Planning": {
+      "scaffold_years": 1
+    },
+    "Budget Tracking": {
+      "max_rows": 50
+    },
+    "Budget Dashboard": {}
+  }
+}
