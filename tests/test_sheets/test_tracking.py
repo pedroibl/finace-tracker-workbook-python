@@ -24,9 +24,9 @@ def test_tracking_table_structure() -> None:
 
     assert "tblTracking" in ws.tables
     table = ws.tables["tblTracking"]
-    assert table.ref == "B2:H20"
+    assert table.ref == "C11:I20"
 
-    headers = [ws.cell(row=2, column=col).value for col in range(2, 9)]
+    headers = [ws.cell(row=11, column=col).value for col in range(3, 10)]
     assert headers == [
         "Date",
         "Type",
@@ -37,9 +37,9 @@ def test_tracking_table_structure() -> None:
         "Effective Date",
     ]
 
-    assert ws.column_dimensions["B"].width == 14
-    assert ws["B3"].number_format == "yyyy-mm-dd"
-    assert ws["D3"].number_format.startswith("_($*")
+    assert ws.column_dimensions["B"].width == 40
+    assert ws["C12"].number_format == "yyyy-mm-dd"
+    assert ws["F12"].number_format.startswith("_($*")
 
 
 def test_tracking_validations_created() -> None:
@@ -58,14 +58,14 @@ def test_tracking_validations_created() -> None:
 
 
 def test_tracking_formulas_and_conditional_formatting() -> None:
-    ws = build_sheet(8)
+    ws = build_sheet(20)
 
     assert (
-        ws["G3"].value
+        ws["H12"].value
         == "=SUMPRODUCT((tblTracking[Date]<=[@Date])*(tblTracking[Type]=\"Income\")*tblTracking[Amount])-SUMPRODUCT((tblTracking[Date]<=[@Date])*((tblTracking[Type]=\"Expense\")+(tblTracking[Type]=\"Saving\"))*tblTracking[Amount])"
     )
     assert (
-        ws["H3"].value
+        ws["I12"].value
         == "=IF(AND(LateIncomeEnabled,[@Type]=\"Income\",DAY([@Date])>LateIncomeDay),DATE(YEAR([@Date]),MONTH([@Date])+1,1),[@Date])"
     )
 

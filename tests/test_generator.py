@@ -84,7 +84,7 @@ def test_build_sheet_contents_populates_calculations_sheet() -> None:
 
     month_idx_ref = gen.workbook.defined_names["MonthIdx"].attr_text
     assert month_idx_ref in {"Calculations!$K$1", "'Calculations'!$K$1"}
-    assert gen.workbook.defined_names["StartingYear"].attr_text == "Settings!$C$4"
+    assert gen.workbook.defined_names["StartingYear"].attr_text == "Settings!$E$8"
     assert gen.workbook.defined_names["YearsList"].attr_text == "'Dropdown Data'!$B$3:$B$7"
 
     dashboard_ws = gen.workbook["Budget Dashboard"]

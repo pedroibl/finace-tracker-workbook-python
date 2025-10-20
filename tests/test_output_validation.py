@@ -49,7 +49,7 @@ def test_generated_workbook_matches_golden(tmp_path: Path) -> None:
                 golden_table = next(iter(golden_ws.tables.values()))
                 generated_table = next(iter(generated_ws.tables.values()))
                 assert golden_table.ref == generated_table.ref
-                assert golden_ws["B3"].number_format == generated_ws["B3"].number_format
+                assert golden_ws["C12"].number_format == generated_ws["C12"].number_format
     finally:
         golden.close()
         generated.close()
