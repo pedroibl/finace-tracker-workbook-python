@@ -64,6 +64,15 @@ class NamedRangeManager:
         for spec in specs:
             self.create_range(spec.name, spec.sheet, spec.ref)
 
+    def create_constant(self, name: str, value: int | float | str) -> None:
+        """Register a workbook-scoped constant named range."""
+
+        if name in self.workbook.defined_names:
+            raise DuplicateNamedRangeError(f"Named range '{name}' already exists")
+
+        defined_name = DefinedName(name, attr_text=str(value))
+        self.workbook.defined_names.add(defined_name)
+
     def _resolve_sheet_index(self, scope: str) -> int:
         if scope.isdigit():
             return int(scope)

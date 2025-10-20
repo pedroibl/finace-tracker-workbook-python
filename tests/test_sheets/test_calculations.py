@@ -5,6 +5,7 @@ from __future__ import annotations
 from openpyxl import Workbook
 
 from budget_generator.sheets.calculations import build_calculations_sheet
+from budget_generator.sheets.planning import ACCOUNTING_FORMAT
 
 
 def _build_sheet() -> tuple[Workbook, str]:
@@ -37,7 +38,7 @@ def test_metric_tiles_headers_and_formulas() -> None:
         ws["C6"].value
         == "=IFERROR(LOOKUP(2,1/(tblTracking[Date]<>\"\"),tblTracking[Balance]),0)"
     )
-    assert ws["C6"].number_format.startswith("_($*")
+    assert ws["C6"].number_format == ACCOUNTING_FORMAT
 
 
 def test_month_map_and_idx_formula() -> None:
@@ -96,4 +97,4 @@ def test_budget_vs_tracked_table_formulas() -> None:
     assert ws["H5"].value == "=F5-G5"
 
     for column in (6, 7, 8):
-        assert ws.cell(row=3, column=column).number_format.startswith("_($*")
+        assert ws.cell(row=3, column=column).number_format == ACCOUNTING_FORMAT

@@ -6,15 +6,15 @@
     "sheets": [
       { "name": "Settings", "visibility": "visible" },
       { "name": "Dropdown Data", "visibility": "hidden" },
-      { "name": "Budget Planning", "visibility": "visible" },
+      { "name": "Budget-Planning", "visibility": "visible" },
       { "name": "Budget Tracking", "visibility": "visible" },
       { "name": "Calculations", "visibility": "hidden" },
       { "name": "Budget Dashboard", "visibility": "visible" }
     ],
     "named_ranges": {
-      "StartingYear": { "sheet": "Settings", "ref": "C4" },
-      "LateIncomeEnabled": { "sheet": "Settings", "ref": "C6" },
-      "LateIncomeDay": { "sheet": "Settings", "ref": "C7" },
+      "StartingYear": { "sheet": "Settings", "ref": "E8" },
+      "LateIncomeEnabled": { "sheet": "Settings", "ref": "J16" },
+      "LateIncomeDay": { "sheet": "Settings", "ref": "E18" },
       "YearsList": { "sheet": "Dropdown Data", "ref": "B3:B7" },
       "MonthsList": { "sheet": "Dropdown Data", "ref": "C3:C14" }
     }
@@ -22,7 +22,7 @@
   "sheets": {
     "Settings": {},
     "Dropdown Data": {},
-    "Budget Planning": {
+    "Budget-Planning": {
       "scaffold_years": 1
     },
     "Budget Tracking": {

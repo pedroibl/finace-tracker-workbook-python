@@ -387,9 +387,9 @@ def build_settings_sheet(ws: Worksheet, spec: dict):
 - [x] Implement `create_named_range(workbook, name, sheet_name, cell_range)`
 - [x] Implement `NamedRangeManager` class to handle all ranges
 - [ ] Create Settings ranges:
-  - StartingYear → Settings!C4
-  - LateIncomeEnabled → Settings!C6
-  - LateIncomeDay → Settings!C7
+  - StartingYear → Settings!E8
+  - LateIncomeEnabled → Settings!J16
+  - LateIncomeDay → Settings!E18
 - [ ] Create Dropdown Data ranges:
   - YearsList → 'Dropdown Data'!B3:B7
   - MonthsList → 'Dropdown Data'!C3:C14
@@ -447,44 +447,44 @@ class NamedRangeManager:
 
 ---
 
-### 2.3 Budget Planning Sheet - Structure
+### 2.3 Budget-Planning Sheet - Structure
 **Priority:** 🔴 P0 | **Status:** ✅ | **Owner:** Backend Dev | **Est:** 8h
 
 #### Tasks:
 - [x] Create `src/budget_generator/sheets/planning.py`
 - [x] Implement `build_planning_sheet(ws: Worksheet, spec: dict)`
-- [x] Create year banner (B2:N2):
+- [x] Create year banner (E5:Q5):
   - Merge cells
-  - Formula: `="Budget Plan for Year "&StartingYear`
+  - Formula: `=StartingYear+0`
   - Format: bold, blue fill #CFE2F3, center
-- [x] Create month header row (D6:O6):
-  - Values: Jan, Feb, Mar, ..., Dec
+- [x] Create month header row (E6:Q6):
+  - Formulas: `=IF(E7=0,"Jan ✓","Jan")` … `=IF(Q7=0,"Total ✓","Total")`
   - Format: bold, blue fill #DAE3F3, center
-- [x] Implement freeze panes at C7
+- [x] Implement freeze panes at E12
 - [x] Create section builder helper function
-- [x] Build Income section (rows 7-13):
-  - Title cell (B7) with "Income" and green fill #43D40F
-  - Category column (C8:C12): Salary, Freelance, Investments, Other, [blank]
-  - Data grid (D8:O12): initialize to 0
-  - Total row label (B13): "Total Income"
-  - Total formulas (D13:O13): SUM each column
+- [x] Build Income section (rows 10-24):
+  - Title cell (D10) with "Income" and green fill #43D40F
+  - Category column (D12:D23): Salary, Freelance, Investments, Other, [blanks to row 23]
+  - Data grid (E12:Q23): initialize to 0 with row totals in column Q
+  - Total row label (D24): "Total Income"
+  - Total formulas (E24:Q24): SUM each column
   - Format: yellow fill #FFF2CC for totals
   - Box with borders
-- [x] Build Expenses section (rows 15-26):
-  - Title cell (B15) with "Expenses" and red fill #F01010
-  - Category column (C16:C25): 10 expense categories
-  - Data grid (D16:O25): initialize to 0
-  - Total row similar to Income
-  - Apply borders
-- [x] Build Savings section (rows 28-34):
-  - Title cell (B28) with "Savings" and blue fill #1564ED
-  - Category column (C29:C33): 5 savings categories
-  - Data grid (D29:O33): initialize to 0
-  - Total row similar to Income
-  - Apply borders
+- [x] Build Expenses section (rows 31-45):
+  - Title cell (D31) with "Expenses" and red fill #F01010
+  - Category column (D33:D44): 10 expense categories + blanks
+  - Data grid (E33:Q44): initialize to 0
+  - Total row label (D45): "Total Expenses"
+  - Apply borders and totals formatting
+- [x] Build Savings section (rows 53-67):
+  - Title cell (D53) with "Savings" and blue fill #1564ED
+  - Category column (D55:D66): savings categories + blanks
+  - Data grid (E55:Q66): initialize to 0
+  - Total row label (D67): "Total Savings"
+  - Apply borders and totals formatting
 - [x] Create tests for planning sheet structure
 
-**Deliverable:** Budget Planning sheet with all three sections
+**Deliverable:** Budget-Planning sheet with all three sections
 
 **Dependencies:** 2.2
 
@@ -497,15 +497,14 @@ class NamedRangeManager:
 
 ---
 
-### 2.4 Budget Planning Sheet - Formulas & Formatting
+### 2.4 Budget-Planning Sheet - Formulas & Formatting
 **Priority:** 🔴 P0 | **Status:** ✅ | **Owner:** Backend Dev | **Est:** 6h
 
-#### Tasks:
 - [x] Implement total formulas for all sections
 - [x] Use formula builder to generate SUM formulas dynamically
-- [x] Create Unallocated row (B36, D36:O36):
+- [x] Create Unallocated row (D7, E7:Q7):
   - Label: "Unallocated (per month)"
-  - Formula: `=D13-D26-D34` (for each month column)
+  - Formula: `=E24-E45-E67` (for each month column)
 - [x] Create `src/budget_generator/formatting/conditional.py`
 - [x] Implement `add_conditional_format(ws, range, rule_type, **kwargs)`
 - [x] Add conditional formatting to Unallocated row:
@@ -513,18 +512,18 @@ class NamedRangeManager:
   - Red (#F4CCCC) when < 0
   - Gray (#D9D9D9) when all sections = 0 (custom formula)
 - [x] Update named ranges for Planning sheet:
-  - IncomeCats → 'Budget Planning'!C8:C12
-  - ExpenseCats → 'Budget Planning'!C16:C25
-  - SavingsCats → 'Budget Planning'!C29:C33
-  - IncomeGrid → 'Budget Planning'!D8:O12
-  - IncomeHeader → 'Budget Planning'!B7
-  - IncomeTotals → 'Budget Planning'!D13:O13
+  - IncomeCats → 'Budget-Planning'!D12:D23
+  - ExpenseCats → 'Budget-Planning'!D33:D44
+  - SavingsCats → 'Budget-Planning'!D55:D66
+  - IncomeGrid → 'Budget-Planning'!E12:Q23
+  - IncomeHeader → 'Budget-Planning'!D10
+  - IncomeTotals → 'Budget-Planning'!E24:Q24
   - (similar for Expenses and Savings)
 - [x] Apply number formatting (accounting format) to data cells
 - [x] Create tests for formulas
 - [x] Create tests for conditional formatting
 
-**Deliverable:** Fully functional Budget Planning sheet for Year 1
+**Deliverable:** Fully functional Budget-Planning sheet for Year 1
 
 **Dependencies:** 2.3
 
@@ -565,19 +564,18 @@ def add_unallocated_conditional_formatting(ws, start_col, end_col, row):
 
 ---
 
-### 2.5 Budget Planning Sheet - Year 2 Scaffold
+### 2.5 Budget-Planning Sheet - Year 2 Scaffold
 **Priority:** 🟠 P1 | **Status:** ✅ | **Owner:** Backend Dev | **Est:** 4h
 
-#### Tasks:
-- [x] Implement Year 2 banner (Q2:AC2):
-  - Formula: `="Budget Plan for Year "&(StartingYear+1)`
-- [x] Create Year 2 month headers (Q6:AB6)
+- [x] Implement Year 2 banner (S5:AD5):
+  - Formula: `=StartingYear+1`
+- [x] Create Year 2 month headers (S6:AD6) using the same `IF` formulas as Year 1
 - [x] Add note/comment about extending sections manually
 - [x] Optionally: implement loop to create multiple years from spec
 - [x] Update documentation about multi-year support
 - [x] Create tests
 
-**Deliverable:** Year 2 header structure in Planning sheet
+**Deliverable:** Year 2 header structure in Budget-Planning sheet
 
 **Dependencies:** 2.4
 
@@ -1014,7 +1012,7 @@ def create_doughnut_chart(ws, title, data_sheet_name, data_range, position):
   2. Build Settings sheet
   3. Build Dropdown Data sheet
   4. Create initial named ranges (Settings, Dropdown)
-  5. Build Budget Planning sheet
+  5. Build Budget-Planning sheet
   6. Create Planning named ranges
   7. Build Budget Tracking sheet
   8. Build Calculations sheet
@@ -1148,7 +1146,7 @@ def test_full_workbook_generation(tmp_path):
     
     # Verify all sheets exist
     assert 'Settings' in wb.sheetnames
-    assert 'Budget Planning' in wb.sheetnames
+    assert 'Budget-Planning' in wb.sheetnames
     assert 'Budget Tracking' in wb.sheetnames
     assert 'Budget Dashboard' in wb.sheetnames
     assert 'Calculations' in wb.sheetnames
@@ -1163,8 +1161,8 @@ def test_full_workbook_generation(tmp_path):
     assert 'IncomeCats' in wb.defined_names
     
     # Verify formulas
-    planning_ws = wb['Budget Planning']
-    assert planning_ws['D13'].value.startswith('=SUM')
+    planning_ws = wb['Budget-Planning']
+    assert planning_ws['E24'].value.startswith('=SUM')
     
     wb.close()
 ```
@@ -1409,9 +1407,9 @@ logger = logging.getLogger(__name__)
 
 def build_planning_sheet(ws, spec):
     try:
-        logger.info("Building Budget Planning sheet...")
+        logger.info("Building Budget-Planning sheet...")
         # Implementation
-        logger.info("✓ Budget Planning sheet built successfully")
+        logger.info("✓ Budget-Planning sheet built successfully")
     except KeyError as e:
         logger.error(f"Missing required field in spec: {e}")
         raise ValueError(f"Invalid specification: missing {e}") from e
@@ -1831,7 +1829,7 @@ Before releasing, manually verify:
 - [ ] Months list shows all 12 months
 - [ ] Sheet is hidden in final workbook
 
-#### Budget Planning Sheet
+#### Budget-Planning Sheet
 - [ ] Banner shows correct year from StartingYear
 - [ ] Month headers display correctly
 - [ ] All three sections (Income, Expenses, Savings) are visible
@@ -2122,7 +2120,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 def build_planning_sheet(ws, spec):
-    """Build Budget Planning sheet."""
+    """Build Budget-Planning sheet."""
     logger.debug(f"Building Planning sheet with spec: {spec.keys()}")
     
     try:
@@ -2135,7 +2133,7 @@ def build_planning_sheet(ws, spec):
         logger.info("Creating Income section...")
         # ... implementation
         
-        logger.info("✓ Budget Planning sheet built successfully")
+        logger.info("✓ Budget-Planning sheet built successfully")
         
     except Exception as e:
         logger.error(f"Failed to build Planning sheet: {e}", exc_info=True)
@@ -2522,7 +2520,7 @@ version = "1.0.0"
 
 ### Added
 - Initial release
-- Budget Planning sheet with zero-based budgeting
+- Budget-Planning sheet with zero-based budgeting
 - Budget Tracking sheet with automatic calculations
 - Budget Dashboard with interactive charts
 - Multi-year planning support

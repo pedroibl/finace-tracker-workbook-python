@@ -4,73 +4,94 @@ from __future__ import annotations
 
 from typing import Any, Mapping
 
-from openpyxl.styles import Alignment, Border, Font, Side
+from openpyxl.styles import Alignment, Font
 from openpyxl.worksheet.worksheet import Worksheet
 
-from ..formatting.styles import apply_fill, merge_and_format
-from ..formatting.validation import add_list_validation, add_number_validation
 from ..utils.named_ranges import NamedRangeManager, NamedRangeSpec
 
 
-HEADER_RANGE = "B2:E2"
-
-
 def build_settings_sheet(worksheet: Worksheet, spec: Mapping[str, Any]) -> None:
-    """Populate the Settings worksheet according to the PRD contract."""
+    """Populate the Settings worksheet according to the design baseline."""
 
     general_settings = spec.get("general", {})
     late_income_settings = spec.get("late_income", {})
 
-    header_title = general_settings.get("title", "General Settings")
+    hero_title = general_settings.get(
+        "hero_title", general_settings.get("title", "Budget Planning")
+    )
+    general_label = general_settings.get("section_label", "General")
+    starting_year_label = general_settings.get("starting_year_label", "Starting Year:")
     starting_year = general_settings.get("starting_year", 2025)
     starting_year_help = general_settings.get(
-        "starting_year_help", "\u2190 Change this to your budget base year"
+        "starting_year_help",
+        "Set The starting year (yyyy) once at the beginning and do not change it again.",
+    )
+    tracking_section_title = general_settings.get(
+        "tracking_section_title", "Budget Tracking & Dashboard"
     )
 
-    late_income_enabled = late_income_settings.get("enabled_default", False)
+    late_income_section = late_income_settings.get(
+        "section_title", "Late Monthly Income"
+    )
+    late_income_status_label = late_income_settings.get(
+        "status_label", "Shift late Income:"
+    )
+    late_income_enabled = bool(late_income_settings.get("enabled_default", False))
+    late_income_status_display = (
+        late_income_settings.get("status_active_text", "Active")
+        if late_income_enabled
+        else late_income_settings.get("status_inactive_text", "Inactive")
+    )
+    late_income_help = late_income_settings.get(
+        "status_help",
+        "Set The starting year (yyyy) once at the beginning and do not change it again.",
+    )
+    late_income_day_label = late_income_settings.get(
+        "day_label", "Starting in day x in month:"
+    )
     late_income_day = late_income_settings.get("day_default", 25)
 
-    # --- Header block ---
-    merge_and_format(
-        worksheet,
-        HEADER_RANGE,
-        value=header_title,
-        font=Font(bold=True),
-        alignment=Alignment(horizontal="center"),
-        fill_color="D9EAD3",
-    )
-    header_border = Border(bottom=Side(style="thin", color="006600"))
-    for cell in worksheet[HEADER_RANGE][0]:
-        cell.border = header_border
+    worksheet["C1"].value = hero_title
+    worksheet["C1"].font = Font(bold=True, size=16)
 
-    # --- Starting year controls ---
-    worksheet["B4"].value = "Starting Year"
-    worksheet["C4"].value = starting_year
-    worksheet["D4"].value = starting_year_help
+    worksheet["C6"].value = general_label
+    worksheet["C6"].font = Font(bold=True)
 
-    # --- Late income toggles ---
-    worksheet["B6"].value = "Late Monthly Income Enabled"
-    worksheet["C6"].value = "TRUE" if late_income_enabled else "FALSE"
-    worksheet["B7"].value = "Late Income Day"
-    worksheet["C7"].value = late_income_day
-    worksheet["D6"].value = "Toggle support for paycheques that arrive after month end"
-    worksheet["D7"].value = "Day of month to post late income"
+    worksheet["D8"].value = starting_year_label
+    worksheet["D8"].font = Font(bold=True)
+    worksheet["E8"].value = starting_year
+    worksheet["E8"].number_format = "0"
+    worksheet["G8"].value = starting_year_help
+    worksheet["G8"].alignment = Alignment(wrap_text=True)
 
-    add_list_validation(worksheet, "C6", ["TRUE", "FALSE"])
-    add_number_validation(worksheet, "C7", 1, 31)
+    worksheet["C12"].value = tracking_section_title
+    worksheet["C12"].font = Font(bold=True)
 
-    # Apply subtle fills so the interactive cells stand out without clashing.
-    apply_fill(worksheet["B6"], "FFFFFF")
-    apply_fill(worksheet["C6"], "FFFFFF")
-    apply_fill(worksheet["C7"], "FFFFFF")
+    worksheet["D14"].value = late_income_section
+    worksheet["D14"].font = Font(bold=True)
+    worksheet["D16"].value = late_income_status_label
+    worksheet["D16"].font = Font(bold=True)
+    worksheet["E16"].value = late_income_status_display
+    worksheet["G16"].value = late_income_help
+    worksheet["G16"].alignment = Alignment(wrap_text=True)
+    worksheet["D18"].value = late_income_day_label
+    worksheet["D18"].font = Font(bold=True)
+    worksheet["E18"].value = late_income_day
+    worksheet["E18"].number_format = "0"
+    worksheet["E19"].value = " "
+
+    # Hidden boolean cell used for formulas via named range.
+    worksheet["J16"].value = late_income_enabled
+    worksheet.column_dimensions["J"].hidden = True
 
 
 def register_settings_named_ranges(manager: NamedRangeManager) -> None:
     """Register named ranges originating from the Settings sheet."""
 
     specs = (
-        NamedRangeSpec("StartingYear", "Settings", "$C$4"),
-        NamedRangeSpec("LateIncomeEnabled", "Settings", "$C$6"),
-        NamedRangeSpec("LateIncomeDay", "Settings", "$C$7"),
+        NamedRangeSpec("StartingYear", "Settings", "$E$8"),
+        NamedRangeSpec("starting_year", "Settings", "$E$8"),
+        NamedRangeSpec("LateIncomeEnabled", "Settings", "$J$16"),
+        NamedRangeSpec("LateIncomeDay", "Settings", "$E$18"),
     )
     manager.register_many(specs)

@@ -14,7 +14,7 @@ def minimal_spec() -> dict:
             "sheets": [
                 {"name": "Settings", "visibility": "visible"},
                 {"name": "Dropdown Data", "visibility": "hidden"},
-                {"name": "Budget Planning", "visibility": "visible"},
+                {"name": "Budget-Planning", "visibility": "visible"},
                 {"name": "Budget Tracking", "visibility": "visible"},
                 {"name": "Calculations", "visibility": "hidden"},
                 {"name": "Budget Dashboard", "visibility": "visible"},
@@ -38,7 +38,7 @@ def test_create_sheets_follows_visibility() -> None:
     assert gen.workbook.sheetnames == [
         "Settings",
         "Dropdown Data",
-        "Budget Planning",
+        "Budget-Planning",
         "Budget Tracking",
         "Calculations",
         "Budget Dashboard",
@@ -84,7 +84,7 @@ def test_build_sheet_contents_populates_calculations_sheet() -> None:
 
     month_idx_ref = gen.workbook.defined_names["MonthIdx"].attr_text
     assert month_idx_ref in {"Calculations!$K$1", "'Calculations'!$K$1"}
-    assert gen.workbook.defined_names["StartingYear"].attr_text == "Settings!$C$4"
+    assert gen.workbook.defined_names["StartingYear"].attr_text == "Settings!$E$8"
     assert gen.workbook.defined_names["YearsList"].attr_text == "'Dropdown Data'!$B$3:$B$7"
 
     dashboard_ws = gen.workbook["Budget Dashboard"]

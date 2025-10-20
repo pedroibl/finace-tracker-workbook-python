@@ -8,6 +8,7 @@ import openpyxl
 import pytest
 
 from budget_generator.generator import BudgetGenerator, GeneratorError
+from budget_generator.sheets.planning import ACCOUNTING_FORMAT
 from budget_generator.utils.json_loader import load_json_spec
 
 EXAMPLES_DIR = Path("examples")
@@ -33,7 +34,7 @@ def test_full_workbook_generation(tmp_path: Path) -> None:
         assert wb.sheetnames == [
             "Settings",
             "Dropdown Data",
-            "Budget Planning",
+            "Budget-Planning",
             "Budget Tracking",
             "Calculations",
             "Budget Dashboard",
@@ -46,18 +47,28 @@ def test_full_workbook_generation(tmp_path: Path) -> None:
         defined_names = wb.defined_names
         expected_ranges = [
             "StartingYear",
+            "starting_year",
             "LateIncomeEnabled",
+            "LateIncomeDay",
             "YearsList",
             "MonthsList",
             "IncomeCats",
+            "income_min_row",
+            "income_max_row",
+            "expenses_min_row",
+            "expenses_max_row",
+            "savings_min_row",
+            "savings_max_row",
             "DashYear",
             "MonthIdx",
         ]
         for name in expected_ranges:
             assert name in defined_names, f"Named range {name} missing"
 
-        planning_ws = wb["Budget Planning"]
-        assert planning_ws["D13"].value.startswith("=SUM")
+        planning_ws = wb["Budget-Planning"]
+        assert planning_ws["E7"].value == "=E24-(E45+E67)"
+        assert planning_ws["E24"].number_format == ACCOUNTING_FORMAT
+        assert planning_ws["E12"].value == 0
         tracking_ws = wb["Budget Tracking"]
         assert "tblTracking" in tracking_ws.tables
 
@@ -81,11 +92,11 @@ def test_generation_handles_empty_categories(tmp_path: Path) -> None:
 
     wb = openpyxl.load_workbook(output_path)
     try:
-        planning_ws = wb["Budget Planning"]
+        planning_ws = wb["Budget-Planning"]
         # Income grid initialised to zeros even without explicit categories
-        assert planning_ws["D8"].value == 0
+        assert planning_ws["E12"].value == 0
         tracking_ws = wb["Budget Tracking"]
-        assert tracking_ws["B3"].number_format == "yyyy-mm-dd"
+        assert tracking_ws["C12"].number_format == "yyyy-mm-dd"
     finally:
         wb.close()
 

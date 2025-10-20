@@ -19,11 +19,21 @@ def test_create_range_registers_defined_name() -> None:
     workbook = Workbook()
     manager = NamedRangeManager(workbook)
 
-    manager.create_range("StartingYear", "Settings", "$C$4")
+    manager.create_range("StartingYear", "Settings", "$E$8")
 
     assert "StartingYear" in workbook.defined_names
     defined = workbook.defined_names["StartingYear"]
-    assert defined.attr_text == "Settings!$C$4"
+    assert defined.attr_text == "Settings!$E$8"
+
+
+def test_create_constant_registers_literal() -> None:
+    workbook = Workbook()
+    manager = NamedRangeManager(workbook)
+
+    manager.create_constant("income_min_row", 12)
+
+    defined = workbook.defined_names["income_min_row"]
+    assert defined.attr_text == "12"
 
 
 def test_create_range_quotes_sheet_with_spaces() -> None:
@@ -40,17 +50,17 @@ def test_create_range_quotes_sheet_with_spaces() -> None:
 def test_duplicate_range_raises() -> None:
     workbook = Workbook()
     manager = NamedRangeManager(workbook)
-    manager.create_range("StartingYear", "Settings", "$C$4")
+    manager.create_range("StartingYear", "Settings", "$E$8")
 
     with pytest.raises(DuplicateNamedRangeError):
-        manager.create_range("StartingYear", "Settings", "$C$4")
+        manager.create_range("StartingYear", "Settings", "$E$8")
 
 
 def test_register_many_is_convenience_wrapper() -> None:
     workbook = Workbook()
     specs = [
-        NamedRangeSpec("StartingYear", "Settings", "$C$4"),
-        NamedRangeSpec("LateIncomeEnabled", "Settings", "$C$6"),
+        NamedRangeSpec("StartingYear", "Settings", "$E$8"),
+        NamedRangeSpec("LateIncomeEnabled", "Settings", "$J$16"),
     ]
 
     manager = NamedRangeManager(workbook)
@@ -64,16 +74,30 @@ def test_register_many_is_convenience_wrapper() -> None:
 def test_register_planning_named_ranges_sets_expected_refs() -> None:
     workbook = Workbook()
     ws = workbook.active
-    ws.title = "Budget Planning"
+    ws.title = "Budget-Planning"
 
     build_planning_sheet(ws, {})
 
     manager = NamedRangeManager(workbook)
     register_planning_named_ranges(manager)
 
-    assert workbook.defined_names["IncomeCats"].attr_text == "'Budget Planning'!$C$8:$C$12"
-    assert workbook.defined_names["ExpenseGrid"].attr_text == "'Budget Planning'!$D$16:$O$25"
-    assert workbook.defined_names["SavingsTotals"].attr_text == "'Budget Planning'!$D$34:$O$34"
+    income_ref = workbook.defined_names["IncomeCats"].attr_text
+    expense_grid_ref = workbook.defined_names["ExpenseGrid"].attr_text
+    savings_totals_ref = workbook.defined_names["SavingsTotals"].attr_text
+    income_min = workbook.defined_names["income_min_row"].attr_text
+    expenses_max = workbook.defined_names["expenses_max_row"].attr_text
+
+    assert income_ref in {"'Budget-Planning'!$D$12:$D$23", "Budget-Planning!$D$12:$D$23"}
+    assert expense_grid_ref in {
+        "'Budget-Planning'!$E$33:$Q$44",
+        "Budget-Planning!$E$33:$Q$44",
+    }
+    assert savings_totals_ref in {
+        "'Budget-Planning'!$E$67:$Q$67",
+        "Budget-Planning!$E$67:$Q$67",
+    }
+    assert income_min == "12"
+    assert expenses_max == "44"
 
 
 def test_register_calculations_named_ranges_sets_expected_refs() -> None:
@@ -109,8 +133,9 @@ def test_register_settings_named_ranges_sets_expected_refs() -> None:
 
     register_settings_named_ranges(manager)
 
-    assert workbook.defined_names["StartingYear"].attr_text == "Settings!$C$4"
-    assert workbook.defined_names["LateIncomeEnabled"].attr_text == "Settings!$C$6"
+    assert workbook.defined_names["StartingYear"].attr_text == "Settings!$E$8"
+    assert workbook.defined_names["starting_year"].attr_text == "Settings!$E$8"
+    assert workbook.defined_names["LateIncomeEnabled"].attr_text == "Settings!$J$16"
 
 
 def test_register_dropdown_named_ranges_sets_expected_refs() -> None:

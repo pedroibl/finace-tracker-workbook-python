@@ -2,75 +2,69 @@ from __future__ import annotations
 
 from openpyxl import Workbook
 
-from budget_generator.sheets.planning import build_planning_sheet
+from budget_generator.sheets.planning import ACCOUNTING_FORMAT, build_planning_sheet
 
 
 def test_planning_banner_and_headers() -> None:
     wb = Workbook()
     ws = wb.active
-    ws.title = "Budget Planning"
+    ws.title = "Budget-Planning"
 
     build_planning_sheet(ws, {})
 
-    assert ws["B2"].value == '="Budget Plan for Year "&StartingYear'
-    assert ws["B2"].fill.start_color.rgb[-6:] == "CFE2F3"
-    month_headers = [ws.cell(row=6, column=col).value for col in range(4, 16)]
-    assert month_headers == [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-    ]
+    assert ws["C1"].value == "Budget Planning"
+    assert ws["C3"].value.startswith("Plan your")
+    assert ws["E5"].value == "=starting_year"
+    assert ws["E6"].value == '=IF(E7=0,"Jan ✓","Jan")'
+    assert ws["Q6"].value == '=IF(Q7=0,"Total ✓","Total")'
 
 
 def test_planning_sections_and_totals() -> None:
     wb = Workbook()
     ws = wb.active
-    ws.title = "Budget Planning"
+    ws.title = "Budget-Planning"
 
     build_planning_sheet(ws, {})
 
-    assert ws["B7"].value == "Income"
-    assert ws["B7"].fill.start_color.rgb[-6:] == "43D40F"
-    assert ws["C8"].value == "Salary"
-    assert ws["B13"].value == "Total Income"
-    assert ws["D13"].value == "=SUM(D8:D12)"
+    assert ws["D10"].value == "Income"
+    assert ws["D10"].fill.start_color.rgb[-6:] == "43D40F"
+    assert ws["D12"].value == "Salary"
+    assert ws["D24"].value == "Total Income"
+    expected_income_total = (
+        '=SUM(INDIRECT(ADDRESS(income_min_row,COLUMN()) & ":" & ADDRESS(income_max_row,COLUMN())))'
+    )
+    assert ws["E24"].value == expected_income_total
 
-    assert ws["B15"].value == "Expenses"
-    assert ws["B15"].fill.start_color.rgb[-6:] == "F01010"
-    assert ws["C16"].value == "Housing"
-    assert ws["B26"].value == "Total Expenses"
+    assert ws["D31"].value == "Expenses"
+    assert ws["D31"].fill.start_color.rgb[-6:] == "F01010"
+    assert ws["D33"].value == "Housing"
+    assert ws["D45"].value == "Total Expenses"
 
-    assert ws["B28"].value == "Savings"
-    assert ws["B28"].fill.start_color.rgb[-6:] == "1564ED"
-    assert ws["C29"].value == "Emergency Fund"
-    assert ws["B34"].value == "Total Savings"
+    assert ws["D53"].value == "Savings"
+    assert ws["D53"].fill.start_color.rgb[-6:] == "1564ED"
+    assert ws["D55"].value == "Emergency Fund"
+    assert ws["D67"].value == "Total Savings"
 
-    # Cells start with zeros and number format configured
-    for column in range(4, 16):
-        assert ws.cell(row=8, column=column).value == 0
-        assert ws.cell(row=8, column=column).number_format.startswith("_($*")
+    for column in range(5, 17):  # Columns E through P
+        assert ws.cell(row=12, column=column).value == 0
+        assert ws.cell(row=12, column=column).number_format == ACCOUNTING_FORMAT
+
+    total_cell = ws.cell(row=12, column=17)
+    assert total_cell.value == "=SUM(E12:P12)"
+    assert total_cell.number_format == ACCOUNTING_FORMAT
 
 
 def test_unallocated_row_formulas_and_conditional_formatting() -> None:
     wb = Workbook()
     ws = wb.active
-    ws.title = "Budget Planning"
+    ws.title = "Budget-Planning"
 
     build_planning_sheet(ws, {})
 
-    for column in range(4, 16):
-        col_letter = ws.cell(row=36, column=column).column_letter
-        assert ws.cell(row=36, column=column).value == (
-            f"={col_letter}13-{col_letter}26-{col_letter}34"
+    for column in range(5, 18):
+        col_letter = ws.cell(row=7, column=column).column_letter
+        assert ws.cell(row=7, column=column).value == (
+            f"={col_letter}24-({col_letter}45+{col_letter}67)"
         )
 
     cf_rules = []
@@ -85,50 +79,24 @@ def test_unallocated_row_formulas_and_conditional_formatting() -> None:
 def test_year_two_scaffold_present() -> None:
     wb = Workbook()
     ws = wb.active
-    ws.title = "Budget Planning"
+    ws.title = "Budget-Planning"
 
     build_planning_sheet(ws, {})
 
-    assert ws["Q2"].value == '="Budget Plan for Year "&(StartingYear+1)'
-    second_year_headers = [ws.cell(row=6, column=col).value for col in range(17, 29)]
-    assert second_year_headers == [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-    ]
-    assert ws["Q4"].value == "Year 2 scaffold – extend sections as needed"
+    assert ws["S5"].value == "=E5+1"
+    second_year_headers = [ws.cell(row=6, column=col).value for col in range(19, 32)]
+    assert second_year_headers[0] == '=IF(S7=0,"Jan ✓","Jan")'
+    assert ws["S8"].value == "Year 2 scaffold – extend rows as needed"
 
 
 def test_scaffold_years_config_creates_additional_headers() -> None:
     wb = Workbook()
     ws = wb.active
-    ws.title = "Budget Planning"
+    ws.title = "Budget-Planning"
 
     build_planning_sheet(ws, {"scaffold_years": 3})
 
-    # Year 3 banner should reference StartingYear+2 and begin at column AF (index 32)
-    assert ws["AF2"].value == '="Budget Plan for Year "&(StartingYear+2)'
-    headers_year3 = [ws.cell(row=6, column=col).value for col in range(32, 44)]
-    assert headers_year3 == [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-    ]
+    # Year 3 banner should chain from the previous year and begin at column AG (index 33)
+    assert ws["AG5"].value == "=S5+1"
+    headers_year3 = [ws.cell(row=6, column=col).value for col in range(33, 46)]
+    assert headers_year3[0] == '=IF(AG7=0,"Jan ✓","Jan")'

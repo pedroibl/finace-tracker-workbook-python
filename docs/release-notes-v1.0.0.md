@@ -3,7 +3,7 @@
 Release date: _TBD_
 
 ## Highlights
-- Full multi-sheet workbook generation (Settings, Dropdown Data, Budget Planning, Budget Tracking, Calculations, Budget Dashboard) aligned with the PRD design targets.
+- Full multi-sheet workbook generation (Settings, Dropdown Data, Budget-Planning, Budget Tracking, Calculations, Budget Dashboard) aligned with the PRD design targets.
 - Dynamic named range infrastructure powering validations, cross-sheet formulas, and dashboard selectors.
 - Dashboard KPI tiles and doughnut charts backed by the Calculations sheet metrics pipeline.
 - Integration and golden-regression coverage: 46 automated tests with 95 % line coverage.

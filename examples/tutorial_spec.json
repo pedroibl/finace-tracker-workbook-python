@@ -7,15 +7,15 @@
     "sheets": [
       { "name": "Settings", "visibility": "visible" },
       { "name": "Dropdown Data", "visibility": "hidden" },
-      { "name": "Budget Planning", "visibility": "visible" },
+      { "name": "Budget-Planning", "visibility": "visible" },
       { "name": "Budget Tracking", "visibility": "visible" },
       { "name": "Calculations", "visibility": "hidden" },
       { "name": "Budget Dashboard", "visibility": "visible" }
     ],
     "named_ranges": {
-      "StartingYear": { "sheet": "Settings", "ref": "C4" },
-      "LateIncomeEnabled": { "sheet": "Settings", "ref": "C6" },
-      "LateIncomeDay": { "sheet": "Settings", "ref": "C7" },
+      "StartingYear": { "sheet": "Settings", "ref": "E8" },
+      "LateIncomeEnabled": { "sheet": "Settings", "ref": "J16" },
+      "LateIncomeDay": { "sheet": "Settings", "ref": "E18" },
       "YearsList": { "sheet": "Dropdown Data", "ref": "B3:B7" },
       "MonthsList": { "sheet": "Dropdown Data", "ref": "C3:C14" },
       "DashYear": { "sheet": "Budget Dashboard", "ref": "C3" },
@@ -26,12 +26,20 @@
   "sheets": {
     "Settings": {
       "general": {
-        "title": "General Settings",
+        "hero_title": "Budget Planning",
+        "section_label": "General",
         "starting_year": 2025,
-        "starting_year_help": "← Change this to your budget base year"
+        "starting_year_help": "Set The starting year (yyyy) once at the beginning and do not change it again.",
+        "tracking_section_title": "Budget Tracking & Dashboard"
       },
       "late_income": {
+        "section_title": "Late Monthly Income",
+        "status_label": "Shift late Income:",
+        "status_active_text": "Active",
+        "status_inactive_text": "Inactive",
+        "status_help": "Set The starting year (yyyy) once at the beginning and do not change it again.",
         "enabled_default": false,
+        "day_label": "Starting in day x in month:",
         "day_default": 25
       }
     },
@@ -41,7 +49,7 @@
         "start_row": 3
       }
     },
-    "Budget Planning": {
+    "Budget-Planning": {
       "scaffold_years": 2
     },
     "Budget Tracking": {
