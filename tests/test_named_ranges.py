@@ -19,11 +19,11 @@ def test_create_range_registers_defined_name() -> None:
     workbook = Workbook()
     manager = NamedRangeManager(workbook)
 
-    manager.create_range("StartingYear", "Settings", "$C$4")
+    manager.create_range("StartingYear", "Settings", "$E$8")
 
     assert "StartingYear" in workbook.defined_names
     defined = workbook.defined_names["StartingYear"]
-    assert defined.attr_text == "Settings!$C$4"
+    assert defined.attr_text == "Settings!$E$8"
 
 
 def test_create_range_quotes_sheet_with_spaces() -> None:
@@ -40,17 +40,17 @@ def test_create_range_quotes_sheet_with_spaces() -> None:
 def test_duplicate_range_raises() -> None:
     workbook = Workbook()
     manager = NamedRangeManager(workbook)
-    manager.create_range("StartingYear", "Settings", "$C$4")
+    manager.create_range("StartingYear", "Settings", "$E$8")
 
     with pytest.raises(DuplicateNamedRangeError):
-        manager.create_range("StartingYear", "Settings", "$C$4")
+        manager.create_range("StartingYear", "Settings", "$E$8")
 
 
 def test_register_many_is_convenience_wrapper() -> None:
     workbook = Workbook()
     specs = [
-        NamedRangeSpec("StartingYear", "Settings", "$C$4"),
-        NamedRangeSpec("LateIncomeEnabled", "Settings", "$C$6"),
+        NamedRangeSpec("StartingYear", "Settings", "$E$8"),
+        NamedRangeSpec("LateIncomeEnabled", "Settings", "$J$16"),
     ]
 
     manager = NamedRangeManager(workbook)
@@ -109,8 +109,8 @@ def test_register_settings_named_ranges_sets_expected_refs() -> None:
 
     register_settings_named_ranges(manager)
 
-    assert workbook.defined_names["StartingYear"].attr_text == "Settings!$C$4"
-    assert workbook.defined_names["LateIncomeEnabled"].attr_text == "Settings!$C$6"
+    assert workbook.defined_names["StartingYear"].attr_text == "Settings!$E$8"
+    assert workbook.defined_names["LateIncomeEnabled"].attr_text == "Settings!$J$16"
 
 
 def test_register_dropdown_named_ranges_sets_expected_refs() -> None:

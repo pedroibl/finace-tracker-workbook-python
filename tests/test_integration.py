@@ -85,7 +85,7 @@ def test_generation_handles_empty_categories(tmp_path: Path) -> None:
         # Income grid initialised to zeros even without explicit categories
         assert planning_ws["D8"].value == 0
         tracking_ws = wb["Budget Tracking"]
-        assert tracking_ws["B3"].number_format == "yyyy-mm-dd"
+        assert tracking_ws["C12"].number_format == "yyyy-mm-dd"
     finally:
         wb.close()
 

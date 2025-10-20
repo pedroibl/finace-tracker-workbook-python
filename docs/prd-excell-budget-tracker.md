@@ -387,9 +387,9 @@ def build_settings_sheet(ws: Worksheet, spec: dict):
 - [x] Implement `create_named_range(workbook, name, sheet_name, cell_range)`
 - [x] Implement `NamedRangeManager` class to handle all ranges
 - [ ] Create Settings ranges:
-  - StartingYear → Settings!C4
-  - LateIncomeEnabled → Settings!C6
-  - LateIncomeDay → Settings!C7
+  - StartingYear → Settings!E8
+  - LateIncomeEnabled → Settings!J16
+  - LateIncomeDay → Settings!E18
 - [ ] Create Dropdown Data ranges:
   - YearsList → 'Dropdown Data'!B3:B7
   - MonthsList → 'Dropdown Data'!C3:C14
