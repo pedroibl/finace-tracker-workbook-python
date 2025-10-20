@@ -18,7 +18,7 @@ This document connects the example JSON specification (`examples/tutorial_spec.j
   "sheets": {
     "Settings": {...},
     "Dropdown Data": {...},
-    "Budget Planning": {...},
+    "Budget-Planning": {...},
     "Budget Tracking": {...},
     "Budget Dashboard": {...}
   }
@@ -36,12 +36,13 @@ This document connects the example JSON specification (`examples/tutorial_spec.j
 
 | JSON Field | Example | Excel Output |
 |------------|---------|--------------|
-| `general.title` | `"General Settings"` | Merged header `B2:E2` with green fill |
-| `general.starting_year` | `2025` | Cell `C4` value (`StartingYear` named range) |
-| `late_income.enabled_default` | `false` | Dropdown `C6` defaults to FALSE |
-| `late_income.day_default` | `25` | Number input `C7` |
+| `general.hero_title` | `"Budget Planning"` | Cell `C1` bold hero heading |
+| `general.starting_year` | `2025` | Cell `E8` value (`StartingYear` named range) |
+| `general.tracking_section_title` | `"Budget Tracking & Dashboard"` | Cell `C12` section heading |
+| `late_income.enabled_default` | `false` | Hidden boolean cell `J16` (display text at `E16`) |
+| `late_income.day_default` | `25` | Cell `E18` value (`LateIncomeDay` named range) |
 
-Named ranges created: `StartingYear`, `LateIncomeEnabled`, `LateIncomeDay`.
+Named ranges created: `StartingYear` (`Settings!$E$8`), `LateIncomeEnabled` (`Settings!$J$16`), `LateIncomeDay` (`Settings!$E$18`).
 
 ---
 
@@ -56,11 +57,11 @@ Derived named ranges: `YearsList` (`B3:B7`), `MonthsList` (`C3:C14`).
 
 ---
 
-## Budget Planning (`sheets.Budget Planning`)
+## Budget-Planning (`sheets.Budget-Planning`)
 
 | JSON Field | Example | Excel Output |
 |------------|---------|--------------|
-| `scaffold_years` | `2` | Year 1 detailed grid; Year 2 banner/month headers (`Q` columns) |
+| `scaffold_years` | `2` | Year 1 detailed grid; Year 2 banner/month headers (`S` block) |
 
 Sections (Income, Expenses, Savings) are standardised and always rendered. Conditional formatting and totals are generated automatically. Named ranges registered include `IncomeCats`, `IncomeGrid`, `IncomeTotals`, etc.
 
@@ -70,9 +71,12 @@ Sections (Income, Expenses, Savings) are standardised and always rendered. Condi
 
 | JSON Field | Example | Excel Output |
 |------------|---------|--------------|
-| `max_rows` | `200` | Table `tblTracking` spans rows `B2:H200` |
+| `intro.title` | `"Budget Tracking"` | Cell `B1` sheet title |
+| `intro.duration` | `"1h 33min"` | Cell `E5` italic duration |
+| `sample_entries` | `[ ... ]` | Prefilled rows starting at `C12` |
+| `max_rows` | `200` | Table `tblTracking` spans columns `C:I` down to row 200 |
 
-Validations reference named ranges from Planning (Income/Expense/Savings categories). SUMPRODUCT formulas compute balances; late income logic uses settings ranges.
+Validations reference named ranges from Planning (Income/Expense/Savings categories). SUMPRODUCT formulas compute balances; late income logic uses the Settings named ranges.
 
 ---
 
@@ -118,7 +122,7 @@ Builder adds:
 
 ## Tips for Customisation
 
-- **Multiple Years**: adjust `Budget Planning.scaffold_years`.
+- **Multiple Years**: adjust `Budget-Planning.scaffold_years`.
 - **Tracking Table Size**: set `Budget Tracking.max_rows` to desired length.
 - **Dashboard Defaults**: override `Budget Dashboard.selectors` to change initial Year/Period.
 - **Late Income Behavior**: toggle `late_income` in the Settings block.

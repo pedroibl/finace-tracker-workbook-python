@@ -89,9 +89,9 @@ class BudgetGenerator:
         build_dropdown_sheet(dropdown_ws, sheet_specs.get("Dropdown Data", {}))
         register_dropdown_named_ranges(manager)
 
-        planning_ws = self._get_sheet("Budget Planning")
-        LOGGER.info("Building Budget Planning sheet")
-        build_planning_sheet(planning_ws, sheet_specs.get("Budget Planning", {}))
+        planning_ws = self._get_sheet("Budget-Planning")
+        LOGGER.info("Building Budget-Planning sheet")
+        build_planning_sheet(planning_ws, sheet_specs.get("Budget-Planning", {}))
         register_planning_named_ranges(manager)
 
         tracking_ws = self._get_sheet("Budget Tracking")

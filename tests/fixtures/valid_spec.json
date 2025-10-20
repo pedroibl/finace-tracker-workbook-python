@@ -7,13 +7,13 @@
     "sheets": [
       {"name": "Settings", "visibility": "visible"},
       {"name": "Dropdown Data", "visibility": "hidden"},
-      {"name": "Budget Planning", "visibility": "visible"},
+      {"name": "Budget-Planning", "visibility": "visible"},
       {"name": "Budget Tracking", "visibility": "visible"},
       {"name": "Calculations", "visibility": "hidden"},
       {"name": "Budget Dashboard", "visibility": "visible"}
     ],
     "named_ranges": {
-      "StartingYear": {"sheet": "Settings", "ref": "C4"},
+      "StartingYear": {"sheet": "Settings", "ref": "E8"},
       "YearsList": {"sheet": "Dropdown Data", "ref": "B3:B7"},
       "DashYear": {"sheet": "Budget Dashboard", "ref": "C3"}
     }
@@ -21,7 +21,7 @@
   "sheets": {
     "Settings": {},
     "Dropdown Data": {},
-    "Budget Planning": {},
+    "Budget-Planning": {},
     "Budget Tracking": {},
     "Calculations": {},
     "Budget Dashboard": {}

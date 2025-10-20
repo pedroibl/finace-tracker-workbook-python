@@ -33,7 +33,7 @@ def test_full_workbook_generation(tmp_path: Path) -> None:
         assert wb.sheetnames == [
             "Settings",
             "Dropdown Data",
-            "Budget Planning",
+            "Budget-Planning",
             "Budget Tracking",
             "Calculations",
             "Budget Dashboard",
@@ -56,8 +56,9 @@ def test_full_workbook_generation(tmp_path: Path) -> None:
         for name in expected_ranges:
             assert name in defined_names, f"Named range {name} missing"
 
-        planning_ws = wb["Budget Planning"]
-        assert planning_ws["D13"].value.startswith("=SUM")
+        planning_ws = wb["Budget-Planning"]
+        assert planning_ws["E7"].value == "=E24-E45-E67"
+        assert planning_ws["E12"].value == 0
         tracking_ws = wb["Budget Tracking"]
         assert "tblTracking" in tracking_ws.tables
 
@@ -81,11 +82,11 @@ def test_generation_handles_empty_categories(tmp_path: Path) -> None:
 
     wb = openpyxl.load_workbook(output_path)
     try:
-        planning_ws = wb["Budget Planning"]
+        planning_ws = wb["Budget-Planning"]
         # Income grid initialised to zeros even without explicit categories
-        assert planning_ws["D8"].value == 0
+        assert planning_ws["E12"].value == 0
         tracking_ws = wb["Budget Tracking"]
-        assert tracking_ws["B3"].number_format == "yyyy-mm-dd"
+        assert tracking_ws["C12"].number_format == "yyyy-mm-dd"
     finally:
         wb.close()
 

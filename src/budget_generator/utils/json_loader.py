@@ -12,7 +12,7 @@ REQUIRED_TOP_LEVEL_KEYS = {"meta", "workbook", "sheets"}
 REQUIRED_SHEET_NAMES = {
     "Settings",
     "Dropdown Data",
-    "Budget Planning",
+    "Budget-Planning",
     "Budget Tracking",
     "Calculations",
     "Budget Dashboard",
